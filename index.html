@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Intro To Web Components</title>
+	<link rel="import" href="components/wc-slide.html">
+	<link rel="import" href="components/wc-slideshow.html">
+	<link rel="import" href="components/md-to-html.html">
+	<link rel="import" href="components/pretty-print.html">
+
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700">
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<wc-slideshow>
+	<wc-slide>
+		<h1>An Intro To Web Components</h1>
+		<h3>For Backbone (and other types of JS MV* framework) Developers</h3>
+		<p><em>by</em> Eric Ponto</p>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>The humble <code>select</code></h2>
+		<select name="" id="">
+			<option value="">Look</option>
+			<option value="">How</option>
+			<option value="">Cool</option>
+			<option value="">This</option>
+			<option value="">Is</option>
+		</select>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>HTML5, new fancy element</h2>
+		<ul>
+			<li>audio</li>
+			<li>video</li>
+			<li>input type=date,color,range
+		</ul>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Create your own</h2>
+		<ul>
+			<li>DHTML</li>
+			<li>jQuery Plugins</li>
+			<li>the MV* movement</li>
+		</ul>
+
+		And now... <strong>Web Components</strong>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>So what should we make?</h2>
+
+		<code>&lt;md-to-html>&lt;/md-to-html></code>
+
+		<md-to-html>
+			###This is MARKDOWN!
+
+			* an awesome list
+			* full of items
+
+			And a [link](http://www.google.com)
+		</md-to-html>
+	</wc-slide>
+
+	<wc-slide>
+		<code>&lt;pretty-print>&lt;/pretty-print></code>
+
+		<pretty-print>
+// check it out...it's syntax highlighting
+function myAmazingFunction() {
+	var awesome = "hi";
+	var anArray = [1, 2, 3, 4];
+}
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Web Components - The <s>Good</s> Only Parts</h2>
+		<ul>
+			<li>Templates</li>
+			<li>Custom Elements</li>
+			<li>The Shadow DOM</li>
+			<li>HTML Imports</li>
+		</ul>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Templates</h2>
+		<h3>The Backbone Way</h3>
+		<pretty-print>
+&lt;script id="slide" type="text/template">
+	&lt;!-- some cool html -->
+&lt;/script>
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Templates</h2>
+		<h3>The WC Way</h3>
+		<pretty-print>
+&lt;​template id="slide">
+	&lt;!-- some cool html -->
+&lt;​/template>
+		</pretty-print>
+
+		<h3>The cool part</h3>
+		<p>The <code>template</code> element is inert. It gets parsed, but not processed. Nothing is rendered, no contents are loaded (like an image), etc...</p>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Custom Elements</h2>
+		<h3>The Backbone Way (using Underscore)</h3>
+
+		<pretty-print>
+var View = Backbone.View.extend({
+	template: _.template($("#myAwesomeTemplate").html()),
+	open: function() {
+		this.$el.addClass("open");
+	},
+	close: function() {
+		this.$el.removeClass("open");
+	},
+	render: function() {
+		var data = this.model.toJSON();
+
+		this.$el.html(template(data));
+		return this;
+	}
+});
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h3>The Custom Element Way</h3>
+
+		<pretty-print>&lt;wc-slide>&lt;/wc-slide></pretty-print>
+		<pretty-print>
+// extend a good ol' HTML element
+var slideProto = Object.create(HTMLElement.prototype);
+
+// lifecycle callbacks
+slideProto.createdCallback = function() {
+	var template = document.currentScript.ownerDocument.querySelector("#slide");
+	this.innerHTML = template.content.cloneNode(true);
+}
+
+slideProto.open = function() {
+	this.classList.add("open");
+}
+
+slideProto.close = function() {
+	this.classList.remove("open");
+}
+
+// register the element in the document...now it's ready to use
+document.registerElement("wc-slide", {prototype: slideProto});
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>The Shadow DOM</h2>
+
+		<p>Putting it all together</p>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Insertion Points</h2>
+		<h3>The <s>Backbone</s> Underscore Way</h3>
+		<pretty-print>
+&lt;script type="text/template" id="hello-tmpl">
+	Hello, &lt;%= name %>!
+&lt;/script>
+		</pretty-print>
+		<pretty-print>
+_.template($("#hello-tmpl").html(), { name: "Eric" });
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h3>The Shadow DOM Way</h3>
+		<pretty-print>
+&lt;template id="hello-tmpl">
+	Hello, &lt;content select=".name">&lt;/content>!
+&lt;/template>
+
+&lt;my-component>
+	&lt;span class="name">Eric&lt;/span>
+&lt;/my-component>
+		</pretty-print>
+		<pretty-print>
+var shaddow = document.querySelector("my-component").createShadowRoot();
+var template = document.querySelector("hello-tmpl");
+shaddow.appendChild(template.content.cloneNode(true));
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Encapsulated CSS!</h2>
+		<h3>The Backbone Way</h3>
+		<p>There is no way to do it...our only option is to use an <code>iframe</code>. Or just super specific seletors.</p>
+		<h3>The Shadow DOM Way</h3>
+		<pretty-print>
+&lt;style>
+	h2 { color: red; }
+&lt;/style>
+
+&lt;template>
+	&lt;style>
+		h2 { color: blue; }
+	&lt;/style>
+
+	&lt;h2>I am blue&lt;/h2>
+&lt;/template>
+
+&lt;h2>I am red&lt;/h2>
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h2>Including Your Component</h2>
+
+		<h3>The Backbone Way</h3>
+
+		<pretty-print>
+&lt;script src="slideComponent.js">&lt;/script>
+		</pretty-print>
+		<pretty-print>
+var MyAwesomeView = require("slideComponent");
+		</pretty-print>
+	</wc-slide>
+
+	<wc-slide>
+		<h3>The Web Component Way - HTML Imports</h3>
+		<p>Include Web Components like you would CSS.</p>
+
+		<pretty-print>
+&lt;link rel="import" href="wc-slide.html">
+		</pretty-print>
+	</wc-slide>
+
+</wc-slideshow>
+
+</body>
+</html>

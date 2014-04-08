@@ -1,0 +1,49 @@
+<template id="slide">
+	<style>
+		.slide {
+			display: none;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			padding: 2em;
+			z-index: 100;
+		}
+
+		.open {
+			display: block;
+		}
+
+		.content {
+			margin-bottom: 4em;
+		}
+	</style>
+
+	<div class="slide">
+		<div class="content">
+			<content></content>
+		</div>
+	</div>
+	
+</template>
+
+<script>
+	var slideProto = Object.create(HTMLElement.prototype);
+
+	slideProto.createdCallback = function() {
+		var template = document.currentScript.ownerDocument.querySelector("#slide");
+		this._root = this.createShadowRoot();
+		this._root.appendChild(document.importNode(template.content));
+	};
+
+	slideProto.open = function() {
+		this._root.querySelector(".slide").classList.add("open");
+	};
+
+	slideProto.close = function() {
+		this._root.querySelector(".slide").classList.remove("open");
+	};
+
+	var Slide = document.registerElement("wc-slide", {prototype: slideProto});
+</script>

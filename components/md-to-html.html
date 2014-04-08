@@ -1,0 +1,11 @@
+<script src="bower_components/markdown/lib/markdown.js"></script>
+<script>
+	var mdProto = Object.create(HTMLElement.prototype);
+
+	mdProto.createdCallback = function() {
+		this._root = this.createShadowRoot();
+		this._root.innerHTML = markdown.toHTML(this.textContent.replace(/^[^\S\n]+/gm,""));
+	};
+
+	var MD = document.registerElement("md-to-html", {prototype: mdProto});
+</script>

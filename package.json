@@ -1,0 +1,13 @@
+{
+  "name": "webcomponents-talk",
+  "version": "0.0.0",
+  "description": "intro to web components",
+  "main": "Gruntfile.js",
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-connect": "~0.7.1"
+  },
+  "scripts": {
+    "install": "bower install"
+  }
+}

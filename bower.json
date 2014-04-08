@@ -1,0 +1,20 @@
+{
+  "name": "webcomponents-talk",
+  "version": "0.0.0",
+  "authors": [
+    "Eric Ponto <eric.ponto@gmail.com>"
+  ],
+  "description": "intro to web components",
+  "main": "index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "markdown": "~0.5.0",
+    "google-code-prettify": "~1.0.1"
+  }
+}

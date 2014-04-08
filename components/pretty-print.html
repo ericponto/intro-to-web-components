@@ -1,0 +1,31 @@
+<template id="pp">
+	<style>
+		.pln { color: #000 }
+		.str { color: #096 }
+		.kwd { color: #039 }
+		.com { color: #903 }
+		.typ { color: #906 }
+		.lit { color: #066 }
+		.pun, .opn, .clo { color: #660 }
+		.tag { color: #309 }
+		.atn { color: #606 }
+		.atv { color: #090 }
+		.dec, .var { color: #606 }
+		.fun { color: #c33 }
+	</style>
+	<pre></pre>
+</template>
+
+<script src="bower_components/google-code-prettify/src/prettify.js"></script>
+<script>
+	var ppProto = Object.create(HTMLElement.prototype);
+
+	ppProto.createdCallback = function() {
+		var template = document.currentScript.ownerDocument.querySelector("#pp");
+		this._root = this.createShadowRoot();
+		this._root.appendChild(document.importNode(template.content));
+		this._root.querySelector("pre").innerHTML = prettyPrintOne(this.textContent.replace(/\</g, "&lt;"));
+	};
+
+	var PP = document.registerElement("pretty-print", {prototype: ppProto});
+</script>

@@ -1,0 +1,110 @@
+<template id="slideshow">
+	<style>
+		.button-bar {
+			text-align: center;
+			color: #c36;
+			position: fixed;
+			z-index: 101;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background: rgba(255, 255, 255, .6);
+			border-top: 1px solid #ccc;
+			padding: .5em 1em;
+		}
+
+		button {
+			background-color: #099;
+			color: #fff;
+			border: 1px solid #077;
+			padding: .5em 1em;
+			border-radius: 2px;
+			cursor: pointer;
+		}
+
+		.next {
+			float: right;
+		}
+
+		.back {
+			float: left;
+		}
+	</style>
+
+	<div class="slides">
+		<content></content>
+
+		<div class="button-bar">
+			<button class="back">Back</button>
+			Slide <span id="index"></span> of <span id="total"></span>
+			<button class="next">Next</button>
+		</div>
+	</div>
+	
+</template>
+
+<script>
+	var slideShowProto = Object.create(HTMLElement.prototype);
+
+	slideShowProto.createdCallback = function() {
+		var template = document.currentScript.ownerDocument.querySelector("#slideshow");
+		var startingPage = 0;
+
+		this._root = this.createShadowRoot();
+		this._root.appendChild(document.importNode(template.content));
+		this.slides = document.querySelectorAll("wc-slide");
+
+		if (location.hash.length) {
+			console.log(location.hash);
+			startingPage = parseInt(location.hash.split("#slide-")[1]) - 1;
+		}
+		this.updateAll(startingPage);
+
+		this._root.getElementById("total").innerHTML = this.slides.length;
+
+		this._root.querySelector(".next").addEventListener("click", function(e) {
+			this.next();
+		}.bind(this), false);
+
+		this._root.querySelector(".back").addEventListener("click", function(e) {
+			this.back();
+		}.bind(this), false);
+	};
+
+	slideShowProto.updateAll = function(index) {
+		if (typeof this.currentIndex !== "undefined") {
+			this.slides[this.currentIndex].close();
+		}
+
+		this.currentIndex = index;
+
+		location.hash = "slide-" + (this.currentIndex + 1);
+
+		this._root.getElementById("index").innerHTML = this.currentIndex + 1;
+		
+		if (this.currentIndex + 1 == this.slides.length) {
+			this._root.querySelector(".next").style.display = "none";
+		} else {
+			this._root.querySelector(".next").style.display = "block";
+		}
+
+		if (this.currentIndex == 0) {
+			this._root.querySelector(".back").style.display = "none";
+		} else {
+			this._root.querySelector(".back").style.display = "block";
+		}
+
+		this.slides[index].open();
+
+	};
+
+	slideShowProto.next = function() {
+		this.updateAll(this.currentIndex + 1);
+	};
+
+	slideShowProto.back = function() {
+		this.updateAll(this.currentIndex - 1);
+	};
+
+	document.registerElement("wc-slideshow", {prototype: slideShowProto});
+</script>
